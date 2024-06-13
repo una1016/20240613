@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap')
+//*代表所有的html的標籤指令，都要依照這樣格式進行
+
+//指定顏色變數
+$colorBlueRoofLight: #6fc5ff
+$colorBlueRoofDark: #0058ff
+
+$colorGreyLight: #fafaf5
+$colorGreyNormal: #e3e2cf
+$colorGreyDark: #bebdaf
+$colorBackground: #2C2F36
+
+$colorShadowBlue: #7cb1ff
+$colorShadowBlueLight: #8dc9fc
+
+$colorWindowGrey: #534d4d
+
+
+//定義漸層
+
+//屋頂的漸層
+$roofGradient: linear-gradient(150deg, $colorBlueRoofLight, $colorBlueRoofDark)
+//一整條從白天到晚上的背景顏色
+$sceneGradient: linear-gradient(#fff75e,#f9dc5c,#f1ba0a)
+
+$c1: #9e2a2b
+$box_bgc: #cddafd
+$box1_bgc: #fde2e4
+$box2_bgc: #fde2e4
+
+
+//設定元件的寬與高
+@mixin size($w,$h:$w,$bdrs:0)
+    width: $w
+    height: $h
+    border-radius: $bdrs
+
+//設定下層的物件置中
+@mixin flex($j:center,$a:center)
+    display: flex
+    justify-content: $j //主軸線:左右
+    align-items: $a  //副軸線:上下
+
+//設定物件的位置，靠左多少px，靠上多少px
+@mixin abpos($l:initial,$t:initial)
+    position: absolute
+    left: $l
+    top: $t
+//畫圓弧的方框，可以直接畫圓
+@mixin bdrsRect($w,$h:$w)
+    width: $w
+    height: $h
+    border-radius: $h/2
+
+
+
+//==============================================
+// @mixin 定義樣式以便後續直接使用
+@mixin person($x,$y,$s)
+        +size(350px,300px,200px) //大小
+        +abpos($x,$y) //位置
+        background: $sceneGradient //漸變
+        scale: $s //縮放
+        .eyes
+            .Reye
+                +bdrsRect(40px) //帶有圓角的矩形
+                +abpos(200px,70px) 
+                background-color: #2a2e34               
+            .Leye
+                +bdrsRect(40px)
+                +abpos(100px,70px)
+                background-color: #2a2e34  
+        .mouth
+            width: 0
+            height: 0
+            border: 30px solid //實線邊框
+            border-color: transparent transparent #fbb034 transparent 
+            +abpos(125px,80px)
+        .blush
+            .Lblush
+                +size(30px,30px,200px)
+                +abpos(75px,100px)
+                background-color: #f00
+                opacity: 0 //透明度(0即看不到，1出現)
+            .Rblush
+                +size(30px,30px,200px)
+                +abpos(235px,100px)
+                background-color: #f00
+                opacity: 0
+//==============================================
+
+//==============================================
+
+@mixin person_active($x,$y) //設定動作，active(點擊)滑入則為hover
+        +abpos($x,$y) //位置
+        .mouth
+            border-color: transparent transparent #fbb034 transparent //嘴巴顏色
+            +abpos(140px,80px) //位置移至(140px,80px)
+            transition: 0.5s //移動速度(0.5秒內完成動作)
+        .blush
+            +size(100px,40px,20px) //(大小)
+            transition: 0.5s //移動速度(0.5秒內完成動作)
+            .Lblush
+                opacity: 1 //(透明度改為1，表示顯現)
+                transition: 0.8s //0.8秒內完成動作
+            .Rblush
+                opacity: 1
+                transition: 0.8s
+* //米字號為通用選擇器，覆蓋所有在他底下的樣式
+    font-family: "Playfair Display","微軟正黑體" //意指通用全部字體為微軟正黑體
+    //border: solid 2px black  //加上框線，實心線，2px線條粗細，黑
+html,body //定義HTML樣式
+    +size(100%)
+    position: relative //相對於它自己原來的位置進行定位
+    +flex()  //讓下一層物件置中
+    .box
+        +size(600px,400px,15px)   //寬高，四個角的圓弧
+        +abpos(200px,100px)     //座位位置     
+        //background-color: $box_bgc   //背景顏色        
+        background: $roofGradient
+        .box1
+            +bdrsRect(200px)  //畫圓，直徑為200px
+            +abpos(25px,45px)
+            +flex()
+            background-color: $box1_bgc
+            h4
+                font-size: 28px   //文字大小
+                letter-spacing: 1px  //字與字間的間距
+                font-weight: 800    //字的粗細大小
+                line-height: 35px   //一行的高度
+                opacity: 0.6
+                color: #003f88
+        .box2
+            +size(100px)
+            +abpos(230px,40px)
+            background-color: $box2_bgc
+            h4  
+                font-size: 25px
+                letter-spacing: 1px
+                font-weight: 900
+                line-height: 35px
+                padding: 10px 0px
+                margin: 0 10px
+                color: $c1
+                opacity: 0   
+    
+    .box:hover   //在box物件範圍內滑入滑鼠游標
+        .box1
+            h4
+             opacity: 0
+             transition: 0.5s 0.5s
+    .box:active  //在.box物件按下滑鼠
+        .box2
+            h4
+                opacity: 1
+                transition: 0.5s 0.5s  //延遲1sec後開始動作，花2sec完成動作結束
+        .box1
+            h4
+                opacity: 1
+                transition: 0.5s
+    
+    //位置設定
+    .person1
+        +person(400px,600px,1) //X值，Y值，大小(乘以1)
+    .person2
+        +person(75px,400px,0.8)
+    .person3
+        +person(800px,10px,0.15)
+        left: 756px  //直接設定從左到右的值
+        top: -110px  //設定上下(負值會往上)
+    //點擊時改變位置
+    .person1:active
+        +person_active(400px,550px)
+    .person2:active
+        +person_active(150px,100px)
+    .person3:active
+        +person_active(800px,10px)
+        left: 756px
+        top: -110px
+    .youtubeDisplay
+        +size(600px,342px)  //要播放的寬高
+        +abpos(900px,10px)  //位置
+    .imageDisplay
+        +size(100px,100px)  //要播放的寬高
+        +abpos(50px,10px)  //位置
+        .img1
+            display: cover
+    .h5pDisplay
+        +size(800px,400px)
+        +abpos(900px,350px)
+    
+    
+        
+
+
